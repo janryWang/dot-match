@@ -6,7 +6,7 @@
   "scripts": {
     "test": " cross-env NODE_ENV=test ava",
     "build": "babel src --out-dir lib",
-    "precommit": "lint-staged && npm run test && npm run build"
+    "precommit": "lint-staged && npm run test && npm run build && git add -A"
   },
   "repository": {
     "type": "git",
