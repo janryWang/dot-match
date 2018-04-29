@@ -1,5 +1,5 @@
 import test from "ava"
-import { Parser } from "./src/parser"
+import { Parser } from "../src/parser"
 
 const parse = (string, json, index) => {
     test("test " + string + ` : ${index}`, t => {
