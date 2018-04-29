@@ -18,8 +18,7 @@ const batchTest = obj => {
 
 batchTest({
     "*": {
-        type: "WildcardOperator",
-        after: undefined
+        type: "WildcardOperator"
     },
     "a.b.c": {
         type: "Identifier",
@@ -33,8 +32,7 @@ batchTest({
                     type: "DotOperator",
                     after: {
                         type: "Identifier",
-                        value: "c",
-                        after: undefined
+                        value: "c"
                     }
                 }
             }
@@ -51,8 +49,7 @@ batchTest({
                 after: {
                     type: "DotOperator",
                     after: {
-                        type: "WildcardOperator",
-                        after: undefined
+                        type: "WildcardOperator"
                     }
                 }
             }
@@ -70,27 +67,22 @@ batchTest({
                     type: "DotOperator",
                     after: {
                         type: "WildcardOperator",
-                        after: undefined,
                         filter: {
                             type: "GroupExpression",
                             value: [
                                 {
                                     type: "Identifier",
-                                    value: "111",
-                                    after: undefined
+                                    value: "111"
                                 },
                                 {
                                     type: "Identifier",
-                                    value: "222",
-                                    after: undefined
+                                    value: "222"
                                 },
                                 {
                                     type: "Identifier",
-                                    value: "aaa",
-                                    after: undefined
+                                    value: "aaa"
                                 }
-                            ],
-                            after: undefined
+                            ]
                         }
                     }
                 }
@@ -109,28 +101,23 @@ batchTest({
                     type: "DotOperator",
                     after: {
                         type: "WildcardOperator",
-                        after: undefined,
                         filter: {
                             type: "GroupExpression",
                             isNone: true,
                             value: [
                                 {
                                     type: "Identifier",
-                                    value: "111",
-                                    after: undefined
+                                    value: "111"
                                 },
                                 {
                                     type: "Identifier",
-                                    value: "222",
-                                    after: undefined
+                                    value: "222"
                                 },
                                 {
                                     type: "Identifier",
-                                    value: "aaa",
-                                    after: undefined
+                                    value: "aaa"
                                 }
-                            ],
-                            after: undefined
+                            ]
                         }
                     }
                 }
@@ -149,20 +136,16 @@ batchTest({
                     type: "DotOperator",
                     after: {
                         type: "WildcardOperator",
-                        after: undefined,
                         filter: {
                             type: "RangeExpression",
                             start: {
                                 type: "Identifier",
-                                value: "11",
-                                after: undefined
+                                value: "11"
                             },
                             end: {
                                 type: "Identifier",
-                                value: "22",
-                                after: undefined
-                            },
-                            after: undefined
+                                value: "22"
+                            }
                         }
                     }
                 }
@@ -181,22 +164,18 @@ batchTest({
                     type: "DotOperator",
                     after: {
                         type: "WildcardOperator",
-                        after: undefined,
                         filter: {
                             type: "GroupExpression",
                             value: [
                                 {
-                                    type: "IgnoreOperator",
-                                    value: "123123!,()",
-                                    after: undefined
+                                    type: "Identifier",
+                                    value: "123123!,()"
                                 },
                                 {
-                                    type: "IgnoreOperator",
-                                    value: "aaa",
-                                    after: undefined
+                                    type: "Identifier",
+                                    value: "aaa"
                                 }
-                            ],
-                            after: undefined
+                            ]
                         }
                     }
                 }
@@ -215,22 +194,18 @@ batchTest({
                     type: "DotOperator",
                     after: {
                         type: "WildcardOperator",
-                        after: undefined,
                         filter: {
                             type: "GroupExpression",
                             value: [
                                 {
-                                    type: "IgnoreOperator",
-                                    value: "123123!,()",
-                                    after: undefined
+                                    type: "Identifier",
+                                    value: "123123!,()"
                                 },
                                 {
                                     type: "Identifier",
-                                    value: "aaa",
-                                    after: undefined
+                                    value: "aaa"
                                 }
-                            ],
-                            after: undefined
+                            ]
                         }
                     }
                 }
@@ -249,23 +224,19 @@ batchTest({
                     type: "DotOperator",
                     after: {
                         type: "WildcardOperator",
-                        after: undefined,
                         filter: {
                             type: "GroupExpression",
                             value: [
                                 {
-                                    type: "IgnoreOperator",
-                                    value: "123123!,()",
-                                    after: undefined
+                                    type: "Identifier",
+                                    value: "123123!,()"
                                 },
                                 {
                                     type: "Identifier",
-                                    value: "aaa",
-                                    after: undefined
+                                    value: "aaa"
                                 }
                             ],
-                            isNone: true,
-                            after: undefined
+                            isNone: true
                         }
                     }
                 }
@@ -284,18 +255,15 @@ batchTest({
                     type: "DotOperator",
                     after: {
                         type: "WildcardOperator",
-                        after: undefined,
                         filter: {
                             type: "GroupExpression",
                             value: [
                                 {
-                                    type: "IgnoreOperator",
-                                    value: "123123!,()",
-                                    after: undefined
+                                    type: "Identifier",
+                                    value: "123123!,()"
                                 }
                             ],
-                            isNone: true,
-                            after: undefined
+                            isNone: true
                         }
                     }
                 }
@@ -313,9 +281,8 @@ batchTest({
                 after: {
                     type: "DotOperator",
                     after: {
-                        type: "IgnoreOperator",
-                        value: "123123!,()",
-                        after: undefined
+                        type: "Identifier",
+                        value: "123123!,()"
                     }
                 }
             }
@@ -336,14 +303,77 @@ batchTest({
                 after: {
                     type: "DotOperator",
                     after: {
-                        type: "IgnoreOperator",
+                        type: "Identifier",
                         value: "123123!,()[",
                         after: {
                             type: "DotOperator",
                             after: {
                                 type: "Identifier",
-                                value: "aaaa",
-                                after: undefined
+                                value: "aaaa"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "a.*(aaa.d.*(!sss),ddd,bbb).c.b": {
+        type: "Identifier",
+        value: "a",
+        after: {
+            type: "DotOperator",
+            after: {
+                type: "WildcardOperator",
+                filter: {
+                    type: "GroupExpression",
+                    value: [
+                        {
+                            type: "Identifier",
+                            value: "aaa",
+                            after: {
+                                type: "DotOperator",
+                                after: {
+                                    type: "Identifier",
+                                    value: "d",
+                                    after: {
+                                        type: "DotOperator",
+                                        after: {
+                                            type: "WildcardOperator",
+                                            filter: {
+                                                type: "GroupExpression",
+                                                isNone: true,
+                                                value: [
+                                                    {
+                                                        type: "Identifier",
+                                                        value: "sss"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            type: "Identifier",
+                            value: "ddd"
+                        },
+                        {
+                            type: "Identifier",
+                            value: "bbb"
+                        }
+                    ]
+                },
+                after: {
+                    type: "DotOperator",
+                    after: {
+                        type: "Identifier",
+                        value: "c",
+                        after: {
+                            type: "DotOperator",
+                            after: {
+                                type: "Identifier",
+                                value: "b"
                             }
                         }
                     }

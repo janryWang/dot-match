@@ -154,7 +154,7 @@ export class Tokenizer {
         }
     }
 
-    readName() {
+    readKeyWord() {
         let startPos = this.state.pos,
             string = ""
         while (true) {
@@ -272,7 +272,7 @@ export class Tokenizer {
             this.state.pos++
             this.finishToken(colonTok)
         } else {
-            this.readName()
+            this.readKeyWord()
         }
     }
 }

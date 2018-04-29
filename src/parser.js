@@ -28,6 +28,12 @@ export class Parser extends Tokenizer {
         return node
     }
 
+    append(parent, node) {
+        if (parent && node) {
+            parent.after = node
+        }
+    }
+
     curContext() {
         return this.state.context[this.state.context.length - 1]
     }
@@ -38,8 +44,6 @@ export class Parser extends Tokenizer {
                 return this.parseIdentifier()
             case starTok:
                 return this.parseWildcardOperator()
-            case bracketLTok:
-                return this.parseRangeExpression()
             case bracketDLTok:
                 return this.parseIgnoreOperator()
             case dotTok:
@@ -55,7 +59,7 @@ export class Parser extends Tokenizer {
 
         this.next()
 
-        node.after = this.parseAtom(this.state.type)
+        this.append(node, this.parseAtom(this.state.type))
 
         return node
     }
@@ -68,12 +72,12 @@ export class Parser extends Tokenizer {
         this.next()
 
         if (this.state.type === parenLTok) {
-            node.filter = this.parseGroupExpression()
+            node.filter = this.parseGroupExpression(node)
         } else if (this.state.type === bracketLTok) {
-            node.filter = this.parseRangeExpression()
+            node.filter = this.parseRangeExpression(node)
         }
 
-        node.after = this.parseAtom(this.state.type)
+        this.append(parent, this.parseAtom(this.state.type))
 
         return node
     }
@@ -85,7 +89,7 @@ export class Parser extends Tokenizer {
 
         this.next()
 
-        node.after = this.parseAtom(this.state.type)
+        this.append(node, this.parseAtom(this.state.type))
 
         return node
     }
@@ -94,20 +98,20 @@ export class Parser extends Tokenizer {
         this.next()
 
         const node = {
-            type: "IgnoreOperator",
+            type: "Identifier",
             value: this.state.value
         }
 
         this.next()
 
-        node.after = this.parseAtom(this.state.type)
+        this.append(node, this.parseAtom(this.state.type))
 
         this.next()
 
         return node
     }
 
-    parseGroupExpression() {
+    parseGroupExpression(parent) {
         const node = {
             type: "GroupExpression",
             value: []
@@ -127,12 +131,10 @@ export class Parser extends Tokenizer {
                 case eofTok:
                     break loop
                 case parenRTok:
-                    if (this.curContext() !== bracketContext) {
-                        this.next()
+                    if (this.curContext() !== parenContext) {
                         break loop
                     } else {
-                        this.next()
-                        break
+                        break loop
                     }
                     break
                 default:
@@ -142,12 +144,12 @@ export class Parser extends Tokenizer {
 
         this.next()
 
-        node.after = this.parseAtom(this.state.type)
+        this.append(parent, this.parseAtom(this.state.type))
 
         return node
     }
 
-    parseRangeExpression() {
+    parseRangeExpression(parent) {
         const node = {
             type: "RangeExpression"
         }
@@ -163,11 +165,9 @@ export class Parser extends Tokenizer {
                     break
                 case bracketRTok:
                     if (!this.curContext()) {
-                        this.next()
                         break loop
                     } else {
-                        this.next()
-                        break
+                        break loop
                     }
                 case commaTok:
                     throw this.unexpect()
@@ -184,7 +184,7 @@ export class Parser extends Tokenizer {
             }
         }
 
-        node.after = this.parseAtom(this.state.type)
+        this.append(parent, this.parseAtom(this.state.type))
 
         return node
     }
