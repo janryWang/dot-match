@@ -64,7 +64,7 @@ export class Parser extends Tokenizer {
         return node
     }
 
-    parseWildcardOperator(parent) {
+    parseWildcardOperator() {
         const node = {
             type: "WildcardOperator"
         }
@@ -77,7 +77,7 @@ export class Parser extends Tokenizer {
             node.filter = this.parseRangeExpression(node)
         }
 
-        this.append(parent, this.parseAtom(this.state.type))
+        this.append(node, this.parseAtom(this.state.type))
 
         return node
     }
@@ -131,12 +131,7 @@ export class Parser extends Tokenizer {
                 case eofTok:
                     break loop
                 case parenRTok:
-                    if (this.curContext() !== parenContext) {
-                        break loop
-                    } else {
-                        break loop
-                    }
-                    break
+                    break loop
                 default:
                     node.value.push(this.parseAtom(this.state.type))
             }
@@ -164,11 +159,7 @@ export class Parser extends Tokenizer {
                     this.next()
                     break
                 case bracketRTok:
-                    if (!this.curContext()) {
-                        break loop
-                    } else {
-                        break loop
-                    }
+                    break loop
                 case commaTok:
                     throw this.unexpect()
                 case eofTok:
@@ -183,6 +174,8 @@ export class Parser extends Tokenizer {
                     }
             }
         }
+
+        this.next()
 
         this.append(parent, this.parseAtom(this.state.type))
 

@@ -243,7 +243,7 @@ batchTest({
             }
         }
     },
-    "a.b  . *   (![[123123!,()]])": {
+    "a.b  . *   (![[123123!,()]],aaa,bbb)": {
         type: "Identifier",
         value: "a",
         after: {
@@ -261,6 +261,14 @@ batchTest({
                                 {
                                     type: "Identifier",
                                     value: "123123!,()"
+                                },
+                                {
+                                    type: "Identifier",
+                                    value: "aaa"
+                                },
+                                {
+                                    type: "Identifier",
+                                    value: "bbb"
                                 }
                             ],
                             isNone: true
