@@ -1,50 +1,17 @@
-# react-propers
+# dot-match
 
-> Select react doms , and update props.
+> Dot path matching tool with DPML(Dot Path Match Language)
 
 
 
 ### Usage
 
 ```
-import React from "react"
-import ReactDOM from "react-dom"
-import Propers from "react-propers"
+import createMatcher from "dot-match"
 
-ReactDOM.render(
-   <Propers selector="$id" traverse={(props,{key})=>{
-       switch(key){
-           case "aaa":
-             return {
-                 className:"aaa"
-             }
-           case "bbb":
-             return {
-                 className:"bbb"
-             }
-           case "ccc":
-             return {
-                 className:"ccc"
-             }
-           case "ddd":
-             return false
-       }
-       return props
-   }}>
-      {React=>(
-       <>
-         <div $id="aaa">111</div>
-         <div $id="bbb">222</div>
-         <div $id="ccc">333</div>
-         <div $id="ddd">444</div>
-       </>
-      )}
-   </Propers>
-)
+const match = createMatcher("a.b.*")
 
-//out put
-
-<div class="aaa">111</div><div class="bbb">222</div><div class="ccc">333</div>
+match(["a","b","c"]) // true
 ```
 
 
@@ -52,6 +19,115 @@ ReactDOM.render(
 ### Install
 
 ```
-npm install --save react-propers
+npm install --save dot-match
 ```
 
+
+
+### DPML
+
+
+
+**Wildcard**
+
+```
+"*"
+```
+
+
+
+**Part Wildcard**
+
+```
+"a.b.*.c.*"
+```
+
+
+
+**Wildcard With Group Filter**
+
+```
+"a.b.*(aa.bb.dd,cc,mm)"
+or 
+"a.b.*(!aa.bb.dd,cc,mm)"
+```
+
+
+
+**Wildcard With Nest Group Filter**
+
+```
+"a.b.*(aa.bb.*(aa.b,c),cc,mm)"
+or 
+"a.b.*(!aa.bb.*(aa.b,c),cc,mm)"
+```
+
+
+
+**Wildcard With Range Filter**
+
+```
+"a.b.*[10:100]"
+or 
+"a.b.*[10:]"
+or 
+"a.b.*[:100]"
+```
+
+
+
+### AST
+
+
+
+```
+NodeType {
+
+    Identifier {
+      type:"Identifier",
+      value:String,
+      after:NodeType
+    }
+    
+    DotOperator {
+      type:"DotOperator",
+      after:NodeType,
+      filter:NodeType
+    }
+    
+    WildcardOperator {
+      type:"WildcardOperator",
+      after:NodeType,
+      filter:NodeType
+    }
+    
+    GroupExpression {
+       type:"GroupExpression",
+       value:Array<NodeType>,
+       isNone:Boolean,
+       after:NodeType
+    }
+    
+    RangeExpression {
+        type:"RangeExpression",
+        start:NodeType,
+        end:NodeType,
+        after:NodeType
+    }
+    
+}
+```
+
+
+
+### LICENSE
+
+The MIT License (MIT)
+
+Copyright (c) 2018 JanryWang
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
