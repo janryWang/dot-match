@@ -1,7 +1,7 @@
 import { Parser } from "./parser"
 import memoize from "lru-memoize"
 
-const parseDPML = memoize(200)(string => {
+export const parseDPML = memoize(200)(string => {
     const parser = new Parser(string)
     return parser.parse()
 })
