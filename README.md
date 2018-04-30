@@ -22,6 +22,11 @@ match(["a","b","c"]) // true
 npm install --save dot-match
 ```
 
+### API
+
+- `createMatcher(string : String) : Function`
+
+- `parseDPML(path : Array<String>) : NodeType`
 
 
 ### DPML
