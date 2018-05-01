@@ -156,6 +156,7 @@ export class Parser extends Tokenizer {
         loop: while (true) {
             switch (this.state.type) {
                 case colonTok:
+                    start = true
                     this.next()
                     break
                 case bracketRTok:
@@ -167,8 +168,6 @@ export class Parser extends Tokenizer {
                 default:
                     if (!start) {
                         node.start = this.parseAtom(this.state.type)
-                        start = true
-                        this.next()
                     } else {
                         node.end = this.parseAtom(this.state.type)
                     }
