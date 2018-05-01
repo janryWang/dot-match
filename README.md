@@ -26,7 +26,7 @@ npm install --save dot-match
 
 - `createMatcher(string : String) : Function`
 
-- `parseDPML(path : Array<String>) : NodeType`
+- `parseDPML(path : String) : NodeType`
 
 
 ### DPML
