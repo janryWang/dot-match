@@ -79,6 +79,12 @@ or
 "a.b.*[:100]"
 ```
 
+**Ignore Key Word**
+
+```
+"a.b.[[cc.uu()sss*]]"
+```
+
 
 
 ### AST
