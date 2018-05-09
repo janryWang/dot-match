@@ -13,12 +13,14 @@ const toArray = val => {
 const createMatcherByAST = root => {
     let stepIndex = 0
     let matchedMaxDepth = 0
+    let lastNode = root
 
     const matchPath = (path, node, start = 0, parent) => {
         if (!node) {
             if (!parent) return true
         }
         if (node) {
+            lastNode = node
             switch (node.type) {
                 case "Identifier":
                     return (
@@ -26,14 +28,11 @@ const createMatcherByAST = root => {
                         matchPath(path, node.after, start)
                     )
                 case "WildcardOperator":
-                    if (node === root && !node.filter && !node.after) {
-                        matchedMaxDepth = path.length - 1
-                    }
                     return node.filter
                         ? matchPath(path, node.filter, start, node)
                         : node.after
                             ? matchPath(path, node.after, start)
-                            : matchedMaxDepth == path.length - 1
+                            : matchedMaxDepth <= path.length - 1
                 case "GroupExpression":
                     if (node.isNone) {
                         return toArray(node.value).every((_node, index) => {
@@ -96,7 +95,17 @@ const createMatcherByAST = root => {
     return path => {
         stepIndex = 0
         matchedMaxDepth = 0
-        return matchPath(path, root) && matchedMaxDepth === path.length - 1
+        if (!lastNode) return false
+        if (lastNode == root && lastNode.type === "WildcardOperator") {
+            return true
+        }
+        if (lastNode.type == "Identifier") {
+            return matchPath(path, root) && matchedMaxDepth === path.length - 1
+        } else if (lastNode.type == "WildcardOperator") {
+            return matchPath(path, root) && matchedMaxDepth <= path.length - 1
+        } else {
+            return false
+        }
     }
 }
 
