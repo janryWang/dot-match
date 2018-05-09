@@ -100,6 +100,7 @@ export class Tokenizer {
     }
 
     skipSpace() {
+        if (this.curContext() === bracketDContext) return
         loop: while (this.state.pos < this.input.length) {
             const ch = this.input.charCodeAt(this.state.pos)
             switch (ch) {
@@ -206,17 +207,19 @@ export class Tokenizer {
             string = ""
         while (true) {
             let code = this.getCode()
-            if (code !== 93 || prevCode !== 93) {
+            if (this.state.pos >= this.input.length) break
+            if ((code === 91 || code === 93) && prevCode === 92) {
+                this.state.pos++
+                prevCode = ""
+            } else if (code == 93 && prevCode === 93) {
+                string = this.input
+                    .slice(startPos, this.state.pos - 1)
+                    .replace(/\\([\[\]])/g, "$1")
+                this.state.pos++
+                break
+            } else {
                 this.state.pos++
                 prevCode = code
-            } else {
-                //]]
-                if (!sliced) {
-                    string = this.input.slice(startPos, this.state.pos - 1)
-                    this.state.pos++
-                    sliced = true
-                    break
-                }
             }
         }
 

@@ -16,6 +16,7 @@ const batchTest = obj => {
     }
 }
 
+
 batchTest({
     "*": {
         type: "WildcardOperator"
@@ -298,7 +299,7 @@ batchTest({
     },
     [`a .  
      b .  
-       [[123123!,()[]]
+       [[123123!,()]]
     
     .aaaa`]: {
         type: "Identifier",
@@ -312,7 +313,7 @@ batchTest({
                     type: "DotOperator",
                     after: {
                         type: "Identifier",
-                        value: "123123!,()[",
+                        value: "123123!,()",
                         after: {
                             type: "DotOperator",
                             after: {
