@@ -20,14 +20,15 @@ const createMatcherByAST = root => {
             if (!parent) return true
         }
         if (node) {
-            lastNode = node
             switch (node.type) {
                 case "Identifier":
+                    lastNode = node
                     return (
                         node.value === path[start] &&
                         matchPath(path, node.after, start)
                     )
                 case "WildcardOperator":
+                    lastNode = node
                     return node.filter
                         ? matchPath(path, node.filter, start, node)
                         : node.after
@@ -95,14 +96,18 @@ const createMatcherByAST = root => {
     return path => {
         stepIndex = 0
         matchedMaxDepth = 0
+
+        let matched = matchPath(path, root)
+
         if (!lastNode) return false
         if (lastNode == root && lastNode.type === "WildcardOperator") {
             return true
         }
+
         if (lastNode.type == "Identifier") {
-            return matchPath(path, root) && matchedMaxDepth === path.length - 1
+            return matched && matchedMaxDepth === path.length - 1
         } else if (lastNode.type == "WildcardOperator") {
-            return matchPath(path, root) && matchedMaxDepth <= path.length - 1
+            return matched && matchedMaxDepth <= path.length - 1
         } else {
             return false
         }
