@@ -151,15 +151,20 @@ export class Parser extends Tokenizer {
 
         this.next()
 
-        let start = false
+        let start = false,
+            hasColon = false
 
         loop: while (true) {
             switch (this.state.type) {
                 case colonTok:
+                    hasColon = true
                     start = true
                     this.next()
                     break
                 case bracketRTok:
+                    if (!hasColon && !node.end) {
+                        node.end = node.start
+                    }
                     break loop
                 case commaTok:
                     throw this.unexpect()
