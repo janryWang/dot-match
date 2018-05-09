@@ -103,6 +103,9 @@ match({
     "a.*":[
         ["a","b"],
         ["a","b","c"]
+    ],
+    "aaa.products.0.*":[
+        ["aaa","products",0,"aaa"]
     ]
 })
 

@@ -24,7 +24,7 @@ const createMatcherByAST = root => {
                 case "Identifier":
                     lastNode = node
                     return (
-                        node.value === path[start] &&
+                        node.value == path[start] &&
                         matchPath(path, node.after, start)
                     )
                 case "WildcardOperator":
