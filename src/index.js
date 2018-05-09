@@ -26,14 +26,14 @@ const createMatcherByAST = root => {
                         matchPath(path, node.after, start)
                     )
                 case "WildcardOperator":
-                    if (!node.filter && !node.after) {
+                    if (node === root && !node.filter && !node.after) {
                         matchedMaxDepth = path.length - 1
                     }
                     return node.filter
                         ? matchPath(path, node.filter, start, node)
                         : node.after
                             ? matchPath(path, node.after, start)
-                            : true
+                            : matchedMaxDepth == path.length - 1
                 case "GroupExpression":
                     if (node.isNone) {
                         return toArray(node.value).every((_node, index) => {
@@ -83,7 +83,7 @@ const createMatcherByAST = root => {
                     }
                 case "DotOperator":
                     stepIndex++
-                    if (matchedMaxDepth < path.length - 1) {
+                    if (matchedMaxDepth <= path.length - 1) {
                         matchedMaxDepth++
                     }
                     return matchPath(path, node.after, start + 1)

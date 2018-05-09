@@ -4,7 +4,7 @@ import createMatcher from "../src/index"
 
 const match = (obj)=>{
     for(let name in obj){
-        test(name,(t)=>{
+        test("test match "+name,(t)=>{
             const match = createMatcher(name)
             if(Array.isArray(obj[name]) && Array.isArray(obj[name][0])){
                 obj[name].forEach((path)=>{
@@ -12,6 +12,21 @@ const match = (obj)=>{
                 })
             } else {
                 t.truthy(match(obj[name]))
+            }
+        })
+    }
+}
+
+const unmatch = (obj)=>{
+    for(let name in obj){
+        test("test unmatch "+name,(t)=>{
+            const match = createMatcher(name)
+            if(Array.isArray(obj[name]) && Array.isArray(obj[name][0])){
+                obj[name].forEach((path)=>{
+                    t.falsy(match(path))
+                })
+            } else {
+                t.falsy(match(obj[name]))
             }
         })
     }
@@ -81,5 +96,18 @@ match({
     ],
     "[[   \\[aa,bb\\]   ]]":[
         ["   [aa,bb]   "]
+    ],
+    "aa.bb.*":[
+        ["aa","bb","ccc"]
+    ]
+})
+
+unmatch({
+    "a.*":[
+        ["a"],
+        ["b"]
+    ],
+    "aa.bb.*":[
+        ["aa","bb"]
     ]
 })
