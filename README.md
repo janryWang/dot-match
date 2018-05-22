@@ -39,7 +39,11 @@ npm install --save dot-match
 "*"
 ```
 
+**Expand String**
 
+```
+"aaa~" or "~" or "aaa~.bbb.cc"
+```
 
 **Part Wildcard**
 
@@ -82,7 +86,7 @@ or
 **Ignore Key Word**
 
 ```
-"a.b.[[cc.uu()sss*]]"
+"a.b.[[cc.uu()sss*\\[1222\\]]]"
 ```
 
 

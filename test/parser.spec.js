@@ -16,7 +16,6 @@ const batchTest = obj => {
     }
 }
 
-
 batchTest({
     "*": {
         type: "WildcardOperator"

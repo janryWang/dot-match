@@ -7,6 +7,7 @@ import {
     bracketLTok,
     bracketRTok,
     bracketDRTok,
+    expandTok,
     parenLTok,
     parenRTok,
     commaTok,
@@ -35,7 +36,8 @@ const isRewordCode = code =>
     code === 40 ||
     code === 41 ||
     code === 44 ||
-    code === 58
+    code === 58 ||
+    code === 126
 
 const getError = (message, props) => {
     const err = new Error(message)
@@ -259,6 +261,9 @@ export class Tokenizer {
                 return this.finishToken(bracketDLTok)
             }
             this.finishToken(bracketLTok)
+        } else if (code === 126) {
+            this.state.pos++
+            this.finishToken(expandTok)
         } else if (code === 93) {
             this.state.pos++
             this.finishToken(bracketRTok)

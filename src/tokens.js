@@ -14,7 +14,8 @@ export const nameTok = TokenType("name", {
             next === eofTok ||
             next === bracketRTok ||
             next === parenRTok ||
-            next === colonTok
+            next === colonTok ||
+            next === expandTok
         )
     }
 })
@@ -45,7 +46,8 @@ export const dotTok = TokenType(".", {
             prev === bracketDRTok ||
             prev === starTok ||
             prev === parenRTok ||
-            prev === bracketRTok
+            prev === bracketRTok ||
+            prev === expandTok
         )
     }
 })
@@ -151,4 +153,11 @@ export const ignoreTok = TokenType("ignore", {
         return prev == bracketDLTok
     }
 })
+
+export const expandTok = TokenType("expandTok", {
+    expectNext(next) {
+        return next === dotTok || next === eofTok
+    }
+})
+
 export const eofTok = TokenType("eof")

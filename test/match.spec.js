@@ -106,6 +106,10 @@ match({
     ],
     "aaa.products.0.*":[
         ["aaa","products",0,"aaa"]
+    ],
+    "aa~.ccc":[
+        ["aa","ccc"],
+        ["aa12","ccc"]
     ]
 })
 
@@ -119,5 +123,10 @@ unmatch({
     ],
     "a":[
         ["a","b"]
+    ],
+    "aa~.ccc":[
+        ["a","ccc"],
+        ["aa"],
+        ["aaasdd"]
     ]
 })

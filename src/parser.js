@@ -12,6 +12,7 @@ import {
     parenLTok,
     parenRTok,
     commaTok,
+    expandTok,
     eofTok,
     ignoreTok
 } from "./tokens"
@@ -42,6 +43,8 @@ export class Parser extends Tokenizer {
         switch (type) {
             case nameTok:
                 return this.parseIdentifier()
+            case expandTok:
+                return this.parseExpandOperator()
             case starTok:
                 return this.parseWildcardOperator()
             case bracketDLTok:
@@ -55,6 +58,18 @@ export class Parser extends Tokenizer {
         const node = {
             type: "Identifier",
             value: this.state.value
+        }
+
+        this.next()
+
+        this.append(node, this.parseAtom(this.state.type))
+
+        return node
+    }
+
+    parseExpandOperator() {
+        const node = {
+            type: "ExpandOperator"
         }
 
         this.next()
