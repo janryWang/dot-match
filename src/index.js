@@ -13,14 +13,6 @@ const toArray = val => {
     return isArr(val) ? val : val ? [val] : []
 }
 
-const toString = val => {
-    if (!val) return ""
-    if (isArr(val)) {
-        return val.join(".")
-    }
-    return isStr(val) ? val : ""
-}
-
 const createMatcherByAST = root => {
     let stepIndex = 0
     let matchedMaxDepth = 0
@@ -143,7 +135,7 @@ export const createMatcher = (string, cache) => {
         let matched,
             needCache = cache instanceof Map
         if (needCache) {
-            let key = toString(path + string),
+            let key = String(path + string),
                 cacheValue = cache.get(key)
             if (cacheValue !== undefined) {
                 return cacheValue
