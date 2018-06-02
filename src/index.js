@@ -1,10 +1,9 @@
 import { Parser } from "./parser"
-import memoize from "lru-memoize"
 
-export const parseDPML = memoize(200)(string => {
+export const parseDPML = string => {
     const parser = new Parser(string)
     return parser.parse()
-})
+}
 
 const toArray = val => {
     return Array.isArray(val) ? val : val ? [val] : []
@@ -123,6 +122,21 @@ const createMatcherByAST = root => {
     }
 }
 
-export const createMatcher = string => createMatcherByAST(parseDPML(string))
+export const createMatcher = (string, cache) => {
+    return path => {
+        let result,
+            key = toString(path),
+            needCache = cache instanceof Map
+        if (needCache) {
+            let lastValue = cache.get(key)
+            if (lastValue !== undefined) return lastValue
+        }
+        result = createMatcherByAST(parseDPML(string))(toArray(path))
+        if (needCache) {
+            cache.set(key, result)
+        }
+        return result
+    }
+}
 
 export default createMatcher
