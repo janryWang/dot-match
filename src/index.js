@@ -134,20 +134,26 @@ const createMatcherByAST = root => {
     }
 }
 
+const matchAll = (string, path) => {
+    return createMatcherByAST(parseDPML(string))(toArray(path))
+}
+
 export const createMatcher = (string, cache) => {
     return path => {
-        let result,
-            key = toString(path),
+        let matched,
             needCache = cache instanceof Map
         if (needCache) {
-            let lastValue = cache.get(key)
-            if (lastValue !== undefined) return lastValue
+            let key = toString(path + string),
+                cacheValue = cache.get(key)
+            if (cacheValue !== undefined) {
+                return cacheValue
+            } else {
+                matched = matchAll(string, path)
+                cache.set(key, matched)
+                return matched
+            }
         }
-        result = createMatcherByAST(parseDPML(string))(toArray(path))
-        if (needCache) {
-            cache.set(key, result)
-        }
-        return result
+        return matchAll(string, path)
     }
 }
 
