@@ -5,8 +5,20 @@ export const parseDPML = string => {
     return parser.parse()
 }
 
+const isArr = val => Array.isArray(val)
+
+const isStr = val => typeof val == "string"
+
 const toArray = val => {
-    return Array.isArray(val) ? val : val ? [val] : []
+    return isArr(val) ? val : val ? [val] : []
+}
+
+const toString = val => {
+    if (!val) return ""
+    if (isArr(val)) {
+        return val.join(".")
+    }
+    return isStr(val) ? val : ""
 }
 
 const createMatcherByAST = root => {
