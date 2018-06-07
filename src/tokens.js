@@ -156,7 +156,12 @@ export const ignoreTok = TokenType("ignore", {
 
 export const expandTok = TokenType("expandTok", {
     expectNext(next) {
-        return next === dotTok || next === eofTok
+        return (
+            next === dotTok ||
+            next === eofTok ||
+            next === commaTok ||
+            next === parenRTok
+        )
     }
 })
 
