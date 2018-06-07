@@ -29,8 +29,10 @@ const createMatcherByAST = root => {
                     if (node.after && node.after.type === "ExpandOperator") {
                         return (
                             node.value ===
-                                path[start].substring(0, node.value.length) &&
-                            matchPath(path, node.after.after, start)
+                                String(path[start]).substring(
+                                    0,
+                                    node.value.length
+                                ) && matchPath(path, node.after.after, start)
                         )
                     }
                     return (
