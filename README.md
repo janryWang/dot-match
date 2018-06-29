@@ -1,5 +1,7 @@
 # dot-match
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/janryWang/dot-match.svg)](https://greenkeeper.io/)
+
 > Dot path matching tool with DPML(Dot Path Match Language)
 
 
