@@ -45,6 +45,17 @@ const getError = (message, props) => {
     return err
 }
 
+const slice = (string, start, end) => {
+    let str = ""
+    for (let i = start; i < end; i++) {
+        let ch = string.charAt(i)
+        if (ch !== "\\") {
+            str += ch
+        }
+    }
+    return str
+}
+
 export class Tokenizer {
     constructor(input) {
         this.input = input
@@ -141,11 +152,14 @@ export class Tokenizer {
         }
 
         this.skipSpace()
-        this.readToken(this.getCode())
+        this.readToken(
+            this.getCode(),
+            this.state.pos > 0 ? this.getCode(this.state.pos - 1) : -Infinity
+        )
     }
 
-    getCode() {
-        return fullCharCodeAtPos(this.input, this.state.pos)
+    getCode(pos = this.state.pos) {
+        return fullCharCodeAtPos(this.input, pos)
     }
 
     eat(type) {
@@ -162,11 +176,12 @@ export class Tokenizer {
             string = ""
         while (true) {
             let code = this.getCode()
+            let prevCode = this.getCode(this.state.pos - 1)
             if (this.input.length === this.state.pos) {
-                string = this.input.slice(startPos, this.state.pos + 1)
+                string = slice(this.input, startPos, this.state.pos + 1)
                 break
             }
-            if (!isRewordCode(code)) {
+            if (!isRewordCode(code) || prevCode === 92) {
                 if (
                     code === 32 ||
                     code === 160 ||
@@ -174,14 +189,14 @@ export class Tokenizer {
                     code === 8232 ||
                     code === 8233
                 ) {
-                    string = this.input.slice(startPos, this.state.pos)
+                    string = slice(this.input, startPos, this.state.pos)
                     break
                 }
                 if (
                     code === 13 &&
                     this.input.charCodeAt(this.state.pos + 1) === 10
                 ) {
-                    string = this.input.slice(startPos, this.state.pos)
+                    string = slice(this.input, startPos, this.state.pos)
                     break
                 }
                 if (
@@ -189,12 +204,12 @@ export class Tokenizer {
                     (code >= 5760 &&
                         nonASCIIwhitespace.test(String.fromCharCode(code)))
                 ) {
-                    string = this.input.slice(startPos, this.state.pos)
+                    string = slice(this.input, startPos, this.state.pos)
                     break
                 }
                 this.state.pos++
             } else {
-                string = this.input.slice(startPos, this.state.pos)
+                string = slice(this.input, startPos, this.state.pos)
                 break
             }
         }
@@ -240,7 +255,10 @@ export class Tokenizer {
         }
     }
 
-    readToken(code) {
+    readToken(code, prevCode) {
+        if (prevCode === 92) {
+            return this.readKeyWord()
+        }
         if (this.input.length <= this.state.pos) {
             this.finishToken(eofTok)
         } else if (this.curContext() === bracketDContext) {
