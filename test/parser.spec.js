@@ -103,7 +103,7 @@ batchTest({
                         type: "WildcardOperator",
                         filter: {
                             type: "GroupExpression",
-                            isNone: true,
+                            isExclude: true,
                             value: [
                                 {
                                     type: "Identifier",
@@ -236,7 +236,7 @@ batchTest({
                                     value: "aaa"
                                 }
                             ],
-                            isNone: true
+                            isExclude: true
                         }
                     }
                 }
@@ -271,7 +271,7 @@ batchTest({
                                     value: "bbb"
                                 }
                             ],
-                            isNone: true
+                            isExclude: true
                         }
                     }
                 }
@@ -349,7 +349,7 @@ batchTest({
                                             type: "WildcardOperator",
                                             filter: {
                                                 type: "GroupExpression",
-                                                isNone: true,
+                                                isExclude: true,
                                                 value: [
                                                     {
                                                         type: "Identifier",

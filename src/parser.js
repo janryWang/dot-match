@@ -140,7 +140,7 @@ export class Parser extends Tokenizer {
                     this.next()
                     break
                 case bangTok:
-                    node.isNone = true
+                    node.isExclude = true
                     this.next()
                     break
                 case eofTok:

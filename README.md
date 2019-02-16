@@ -119,7 +119,7 @@ NodeType {
     GroupExpression {
        type:"GroupExpression",
        value:Array<NodeType>,
-       isNone:Boolean,
+       isExclude:Boolean,
        after:NodeType
     }
     

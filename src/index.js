@@ -15,13 +15,14 @@ const toArray = val => {
 
 const createMatcherByAST = root => {
     let stepIndex = 0
-    let matchedMaxDepth = 0
     let lastNode = root
-
-    const matchPath = (path, node, start = 0, parent) => {
+    let parents = []
+    const matchPath = (path, node, start = 0) => {
         if (!node) {
-            if (!parent) return true
+            if (path[start + 1]) return false
+            if (start == path.length - 1) return true
         }
+
         if (node) {
             switch (node.type) {
                 case "Identifier":
@@ -32,29 +33,48 @@ const createMatcherByAST = root => {
                                 String(path[start]).substring(
                                     0,
                                     node.value.length
-                                ) && matchPath(path, node.after.after, start)
+                                ) &&
+                            (node.after.after
+                                ? matchPath(path, node.after.after, start)
+                                : !!path[start])
                         )
+                    }
+                    if (path[start + 1] && !node.after) {
+                        if (parents.length) {
+                            for (let i = parents.length - 1; i >= 0; i--) {
+                                if (!parents[i].after) return false
+                            }
+                        } else {
+                            return false
+                        }
                     }
                     return (
                         node.value == path[start] &&
-                        matchPath(path, node.after, start)
+                        (node.after
+                            ? matchPath(path, node.after, start)
+                            : !!path[start])
                     )
                 case "ExpandOperator":
                     return matchPath(path, node.after, start)
                 case "WildcardOperator":
                     lastNode = node
-                    return node.filter
-                        ? matchPath(path, node.filter, start, node)
+                    parents.push(node)
+                    const result = node.filter
+                        ? matchPath(path, node.filter, start)
                         : node.after
                             ? matchPath(path, node.after, start)
-                            : matchedMaxDepth <= path.length - 1
+                            : !!path[start]
+                    parents.pop()
+                    return result
                 case "GroupExpression":
-                    if (node.isNone) {
+                    if (node.isExclude) {
                         return toArray(node.value).every((_node, index) => {
-                            matchedMaxDepth = start
-                            const unmatched =
-                                !matchPath(path, _node, start) &&
-                                matchPath(path, parent.after, stepIndex)
+                            const unmatched = !matchPath(
+                                path,
+                                _node,
+                                start,
+                                node
+                            )
                             if (unmatched) {
                                 stepIndex = start
                             }
@@ -62,9 +82,7 @@ const createMatcherByAST = root => {
                         })
                     } else {
                         return toArray(node.value).some(_node => {
-                            const matched =
-                                matchPath(path, _node, start) &&
-                                matchPath(path, parent.after, stepIndex)
+                            const matched = matchPath(path, _node, start, node)
                             if (!matched) {
                                 stepIndex = start
                             }
@@ -72,6 +90,7 @@ const createMatcherByAST = root => {
                         })
                     }
                 case "RangeExpression":
+                    const parent = parents[parents.length - 1]
                     if (node.start) {
                         if (node.end) {
                             return (
@@ -97,34 +116,22 @@ const createMatcherByAST = root => {
                     }
                 case "DotOperator":
                     stepIndex++
-                    if (matchedMaxDepth <= path.length - 1) {
-                        matchedMaxDepth++
-                    }
                     return matchPath(path, node.after, start + 1)
             }
         }
 
         return true
     }
-
     return path => {
         stepIndex = 0
-        matchedMaxDepth = 0
-
-        let matched = matchPath(path, root)
+        const matchResult = matchPath(path, root)
 
         if (!lastNode) return false
         if (lastNode == root && lastNode.type === "WildcardOperator") {
             return true
         }
 
-        if (lastNode.type == "Identifier") {
-            return matched && matchedMaxDepth === path.length - 1
-        } else if (lastNode.type == "WildcardOperator") {
-            return matched && matchedMaxDepth <= path.length - 1
-        } else {
-            return false
-        }
+        return matchResult
     }
 }
 
