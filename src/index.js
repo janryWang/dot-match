@@ -1,4 +1,5 @@
 import { Parser } from "./parser"
+import memo from "fast-memoize"
 
 export const parseDPML = string => {
     const parser = new Parser(string)
@@ -138,9 +139,9 @@ const createMatcherByAST = root => {
     }
 }
 
-const matchAll = (string, path) => {
+const matchAll = memo((string, path) => {
     return createMatcherByAST(parseDPML(string))(toArray(path))
-}
+})
 
 const traverse = (ast, callback) => {
     if (!isFn(callback)) return
@@ -159,7 +160,21 @@ const traverse = (ast, callback) => {
     }
 }
 
-export const isAbsolutePath = pattern => {
+export const getPathSegments = memo(pattern => {
+    let segments = []
+    let isAbsolutePath = true
+    traverse(parseDPML(pattern), ({ type, value }) => {
+        if (type !== "Identifier" && type !== "DotOperator") {
+            isAbsolutePath = false
+            return false
+        } else if (type == "Identifier") {
+            segments.push(value)
+        }
+    })
+    return isAbsolutePath ? segments : []
+})
+
+export const isAbsolutePath = memo(pattern => {
     let isAbsolutePath = true
     traverse(parseDPML(pattern), ({ type }) => {
         if (type !== "Identifier" && type !== "DotOperator") {
@@ -168,9 +183,9 @@ export const isAbsolutePath = pattern => {
         }
     })
     return isAbsolutePath
-}
+})
 
-export const isWildMatchPath = pattern => {
+export const isWildMatchPath = memo(pattern => {
     let hasWildMatchPath = false
     traverse(parseDPML(pattern), node => {
         const { type } = node
@@ -191,23 +206,10 @@ export const isWildMatchPath = pattern => {
         }
     })
     return hasWildMatchPath
-}
+})
 
 export const createMatcher = (string, cache) => {
     return path => {
-        let matched,
-            needCache = cache instanceof Map
-        if (needCache) {
-            let key = String(path + string),
-                cacheValue = cache.get(key)
-            if (cacheValue !== undefined) {
-                return cacheValue
-            } else {
-                matched = matchAll(string, path)
-                cache.set(key, matched)
-                return matched
-            }
-        }
         return matchAll(string, path)
     }
 }

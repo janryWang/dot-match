@@ -1,6 +1,6 @@
 {
   "name": "dot-match",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -72,6 +72,7 @@
     }
   },
   "dependencies": {
+    "fast-memoize": "^2.5.1",
     "lru-memoize": "^1.0.2"
   }
 }

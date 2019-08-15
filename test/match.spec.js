@@ -1,5 +1,5 @@
 import test from 'ava'
-import createMatcher, { isAbsolutePath, isWildMatchPath } from '../src/index'
+import createMatcher, { isAbsolutePath, isWildMatchPath,getPathSegments } from '../src/index'
 
 const match = obj => {
   for (let name in obj) {
@@ -30,6 +30,12 @@ const unmatch = obj => {
     })
   }
 }
+
+test('getPathSegments',t=>{
+  t.deepEqual(getPathSegments('a.b. c'),['a','b','c'])
+  t.deepEqual(getPathSegments('a  . b'),['a','b'])
+  t.notDeepEqual(getPathSegments('a  . b'),['a','b','c'])
+})
 
 test('isAbsolutePath', (t) => {
   t.truthy(isAbsolutePath('a.b. c .d'))
