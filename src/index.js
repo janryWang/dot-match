@@ -5,6 +5,8 @@ export const parseDPML = string => {
     return parser.parse()
 }
 
+const isFn = val => typeof val === "function"
+
 const isArr = val => Array.isArray(val)
 
 const isStr = val => typeof val == "string"
@@ -63,8 +65,8 @@ const createMatcherByAST = root => {
                     const result = node.filter
                         ? matchPath(path, node.filter, start)
                         : node.after
-                            ? matchPath(path, node.after, start)
-                            : !!path[start]
+                        ? matchPath(path, node.after, start)
+                        : !!path[start]
                     parents.pop()
                     return result
                 case "GroupExpression":
@@ -138,6 +140,57 @@ const createMatcherByAST = root => {
 
 const matchAll = (string, path) => {
     return createMatcherByAST(parseDPML(string))(toArray(path))
+}
+
+const traverse = (ast, callback) => {
+    if (!isFn(callback)) return
+    const result = callback(ast)
+    if (result === false) return
+    if (ast.after) {
+        traverse(ast.after, callback)
+    }
+    if (ast.filter) {
+        traverse(ast.filter, callback)
+    }
+    if (isArr(ast.value)) {
+        ast.value.forEach(node => {
+            traverse(node, callback)
+        })
+    }
+}
+
+export const isAbsolutePath = pattern => {
+    let isAbsolutePath = true
+    traverse(parseDPML(pattern), ({ type }) => {
+        if (type !== "Identifier" && type !== "DotOperator") {
+            isAbsolutePath = false
+            return false
+        }
+    })
+    return isAbsolutePath
+}
+
+export const isWildMatchPath = pattern => {
+    let hasWildMatchPath = false
+    traverse(parseDPML(pattern), node => {
+        const { type } = node
+        if (type === "RangeExpression") {
+            const isWild =
+                (!node.end.value && !!node.start.value) ||
+                (!node.start.value && !!node.end.value)
+            if (isWild) {
+                hasWildMatchPath = true
+                return false
+            }
+        } else if (
+            (type === "WildcardOperator" && !node.filter) ||
+            type === "ExpandOperator"
+        ) {
+            hasWildMatchPath = true
+            return false
+        }
+    })
+    return hasWildMatchPath
 }
 
 export const createMatcher = (string, cache) => {

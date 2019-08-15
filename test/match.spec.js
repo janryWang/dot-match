@@ -1,5 +1,5 @@
 import test from 'ava'
-import createMatcher from '../src/index'
+import createMatcher, { isAbsolutePath, isWildMatchPath } from '../src/index'
 
 const match = obj => {
   for (let name in obj) {
@@ -30,6 +30,21 @@ const unmatch = obj => {
     })
   }
 }
+
+test('isAbsolutePath', (t) => {
+  t.truthy(isAbsolutePath('a.b. c .d'))
+  t.truthy(isAbsolutePath('[[\\[aa,bb\\]]]'))
+  t.falsy(isAbsolutePath('a.b.*[1:2]'))
+  t.falsy(isAbsolutePath('a.b~'))
+  t.falsy(isAbsolutePath('a.b~.cc'))
+})
+
+test('isWildMatchPath', (t) => {
+  t.falsy(isWildMatchPath('a.b. c .d'))
+  t.falsy(isWildMatchPath('a.b.*[1:2]'))
+  t.truthy(isWildMatchPath('a.b~'))
+  t.truthy(isWildMatchPath('a.b~.cc'))
+})
 
 match({
   '*': ['a', 'b', 'c'],
@@ -63,13 +78,15 @@ match({
   'aa~.ccc': [['aa', 'ccc'], ['aa12', 'ccc']],
   '*(aa~,bb~).*': [['aa12323', 'asdasd'], ['bb12222', 'asd']],
   '*(aa,bb,bb.aa)': [['bb', 'aa']],
-  '*(!aa,bb,bb.aa)': [['xx'], ['yyy'], ['bb', 'ss']]
+  '*(!aa,bb,bb.aa)': [['xx'], ['yyy'], ['bb', 'ss']],
+  '*(!aaa)': [['bbb']]
 })
 
 unmatch({
   'a.*': [['a'], ['b']],
   'aa.bb.*': [['aa', 'bb']],
   'a.*.b': [['a', 'k', 'b', 'd']],
+  '*(!aaa)': [['aaa']],
   a: [['c', 'b']],
   'aa~.ccc': [['a', 'ccc'], ['aa'], ['aaasdd']],
   bb: [['bb', 'cc']]
