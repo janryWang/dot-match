@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/janryWang/react-propers.git"
+    "url": "git+https://github.com/janryWang/dot-match.git"
   },
   "author": "janryWang",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/janryWang/react-propers/issues"
+    "url": "https://github.com/janryWang/dot-match/issues"
   },
-  "homepage": "https://github.com/janryWang/react-propers#readme",
+  "homepage": "https://github.com/janryWang/dot-match#readme",
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.46",
     "@babel/core": "^7.0.0-beta.46",
